@@ -303,7 +303,7 @@ def easy_hist(x, xrange, Nbins, Figsize=(10, 7), title= None, x_label= 'x'):
     ax.errorbar(bin_centers, counts, yerr=np.sqrt(counts), fmt='o',mec='k',mfc='g', capsize=1, ecolor='g')
     ax.set(xlabel=x_label, ylabel=f'Counts / {binwidth:.2f}', title=title)
     plt.show()
-    return fig, ax , counts
+    return fig, ax , counts , binwidth
     
 
 
