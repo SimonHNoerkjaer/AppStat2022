@@ -290,7 +290,7 @@ def binning(x, xrange, Nbins, remove_empty=True):
 
 
 #Plotting histogram:
-def easy_hist(x, xrange, Nbins, Figsize=(10, 7)):
+def easy_hist(x, xrange, Nbins, Figsize=(10, 7), title= None):
     '''Function for plotting a histogram
     
        x: data to be binned
@@ -301,7 +301,7 @@ def easy_hist(x, xrange, Nbins, Figsize=(10, 7)):
     fig, ax = plt.subplots(figsize=Figsize)
     ax.hist(x, bins=Nbins ,range=xrange, histtype='stepfilled', color='lightgreen', edgecolor='grey', linewidth=1.2)
     ax.errorbar(bin_centers, counts, yerr=np.sqrt(counts), fmt='o',mec='k',mfc='g', capsize=1, ecolor='g')
-    ax.set(xlabel='x', ylabel=f'Counts / {binwidth:.2f}')
+    ax.set(xlabel='x', ylabel=f'Counts / {binwidth:.2f}', title=title)
     plt.show()
     return fig, ax , counts
     
