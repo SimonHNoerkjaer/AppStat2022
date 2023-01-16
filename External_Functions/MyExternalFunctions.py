@@ -227,7 +227,7 @@ def Errorpropagation(f, par, con = None, rho = None, cov = None):
     error_f = error_f.simplify()
     fvalue = sp.lambdify(all_par, f)
     error_fvalue = sp.lambdify(all_var, error_f)
-    return error_f, fvalue, error_fvalue, error_contributions , par
+    return error_f, fvalue, error_fvalue, error_contributions
 
 
 
@@ -348,16 +348,17 @@ def inverse_transform(f,N, xmin, xmax=None):
         xmax = sp.oo
     
     x, y = sp.symbols('x y')
-    F_norm = sp.integrate(f, (x, xmin, xmax), conds='none')
+    F_integral = sp.integrate(f, (x, xmin, xmax), conds='none')
 
-    if F_norm == 0:
+    if F_integral == 0:
         print('ERROR: Integral is zero. Choose a different integration range.')
         return
-    if F_norm == sp.oo:
+    if F_integral == sp.oo:
         print('ERROR: Integral is diverging. Choose a different integration range.')
         return
 
-    F = 1/F_norm * sp.integrate(f, (x, xmin, x), conds='none')
+    Norm_Constant = 1/F_integral
+    F = Norm_Constant * sp.integrate(f, (x, xmin, x), conds='none')
     F_inv = sp.solve(F-y, x)[0]
     F_inv = sp.lambdify(y, F_inv, 'numpy')
     r = np.random
@@ -365,7 +366,7 @@ def inverse_transform(f,N, xmin, xmax=None):
     y = r.uniform(0,1,N)
     x_values = F_inv(y)
 
-    return x_values ,F_norm, F_inv
+    return x_values ,Norm_Constant, F_inv
 
 
 
