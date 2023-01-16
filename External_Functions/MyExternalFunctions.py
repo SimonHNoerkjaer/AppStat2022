@@ -465,12 +465,10 @@ def fisher_discriminant(sample1, sample2, w0=True):
     """
     mean1 = np.mean(sample1, axis=0)
     mean2 = np.mean(sample2, axis=0)
-    print(mean1, mean2)
     cov1 = np.cov(sample1, rowvar=False)
     cov2 = np.cov(sample2, rowvar=False)
     
     cov_combined = cov1 + cov2
-    print(cov_combined)
     inv_cov_combined = np.linalg.inv(cov_combined)
 
     wf = inv_cov_combined @ (mean1 - mean2)
@@ -486,10 +484,6 @@ def fisher_discriminant(sample1, sample2, w0=True):
     separation = np.abs((mean1 - mean2)) / np.sqrt(std_1**2 + std_2**2)
 
     return fisher1, fisher2, separation
-
-
-
-
 
 
 
