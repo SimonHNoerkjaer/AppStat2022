@@ -43,7 +43,7 @@ def Matplotlib_settings():
     plt.rcParams['grid.alpha'] = 0.5
     plt.rcParams['grid.color'] = "#cccccc"
     plt.rcParams['lines.color'] = "k"
-    plt.rcParams['lines.linewidth'] = 2
+    plt.rcParams['lines.linewidth'] = 1
     plt.rcParams['lines.markersize'] = 6
     plt.rcParams['legend.fontsize'] = 12
     plt.rcParams['figure.titlesize'] = 14
@@ -55,7 +55,7 @@ def Matplotlib_settings():
     plt.rcParams['ytick.minor.visible'] = True
     plt.rcParams['xtick.minor.size'] = 2
     plt.rcParams['ytick.minor.size'] = 2
-    plt.rcParams['errorbar.capsize'] = 4
+    plt.rcParams['errorbar.capsize'] = 2
 
 
 
@@ -299,7 +299,7 @@ def easy_hist(x, xrange, Nbins, Figsize=(10, 7), title= None, x_label= 'x'):
        '''
     counts, bin_centers, binwidth = binning(x, xrange, Nbins)
     fig, ax = plt.subplots(figsize=Figsize)
-    ax.hist(x, bins=Nbins ,range=xrange, histtype='stepfilled', color='lightgreen', edgecolor='grey', linewidth=1.2)
+    ax.hist(x, bins=Nbins ,range=xrange, histtype='stepfilled', color='lightgreen', capsize=2,edgecolor='grey', linewidth=1.2)
     ax.errorbar(bin_centers, counts, yerr=np.sqrt(counts), fmt='o',mec='k',mfc='g', capsize=1, ecolor='g')
     ax.set(xlabel=x_label, ylabel=f'Counts / {binwidth:.2f}', title=title)
     # plt.show()
