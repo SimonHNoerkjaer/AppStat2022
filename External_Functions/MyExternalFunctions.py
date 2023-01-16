@@ -12,12 +12,28 @@ from sympy import integrate
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #################################################################   PLOTTING   #################################################################
 
 #Matplotlib settings
 
 import matplotlib.pyplot as plt
-import numpy as np
 def Matplotlib_settings():
     plt.style.use('classic')
     plt.rcParams['font.family'] = 'Times New Roman'
@@ -46,7 +62,6 @@ def Matplotlib_settings():
 # Text on plots  (- Troels Petersen)
 
 import numpy as np
-
 def format_value(value, decimals):
     """ 
     Checks the type of a variable and formats it accordingly.
@@ -212,7 +227,27 @@ def Errorpropagation(f, par, con = None, rho = None, cov = None):
     error_f = error_f.simplify()
     fvalue = sp.lambdify(all_par, f)
     error_fvalue = sp.lambdify(all_var, error_f)
-    return error_f, fvalue, error_fvalue, error_contributions
+    return error_f, fvalue, error_fvalue, error_contributions , par
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -270,6 +305,21 @@ def easy_hist(x, xrange, Nbins, Figsize=(10, 7)):
     plt.show()
     return fig, ax , counts
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -367,96 +417,17 @@ def Accept_reject(f, xrange, yrange, N_accepted):
 
 
 
-######################################################################  Chi2  ###############################################################
 
 
 
-from iminuit.util import make_func_code
-from iminuit import describe #, Minuit,
-
-def set_var_if_None(var, x):
-    if var is not None:
-        return np.array(var)
-    else: 
-        return np.ones_like(x)
-    
-def compute_f(f, x, *par):
-    try:
-        return f(x, *par)
-    except ValueError:
-        return np.array([f(xi, *par) for xi in x])
-
-
-#chi2 penelty function
-
-def Chi2penelty(parameter, know_parameter, sigma_parameter):
-    '''Function for calculating the penelty term for a given parameter, known parameter and sigma.
-    
-       Input: parameter, known parameter, sigma
-       
-       returns: penelty term'''
-
-    return (parameter - know_parameter)**2 / sigma_parameter**2
 
 
 
-class Chi2Regression:  # override the class with a better one
-
-    def __init__(self, f, x, y, sy=None, weights=None, bound=None, penelty=None):
-        
-        if bound is not None:
-            x = np.array(x)
-            y = np.array(y)
-            sy = np.array(sy)
-            mask = (x >= bound[0]) & (x <= bound[1])
-            x  = x[mask]
-            y  = y[mask]
-            sy = sy[mask]
-            
-        
-
-        self.f = f  # model predicts y for given x
-        self.x = np.array(x)
-        self.y = np.array(y)
-        
-        self.sy = set_var_if_None(sy, self.x)
-        self.weights = set_var_if_None(weights, self.x)
-        self.func_code = make_func_code(describe(self.f)[1:])
-
-        # if penelty is None:
-        #     self.penelty = 0
-        # else:
-        #     self.penelty = np.sum(Chi2penelty(*penelty))
-
-    def __call__(self, *par):  # par are a variable number of model parameters
-        
-        # compute the function value
-        f = compute_f(self.f, self.x, *par)
-        
-        # compute the chi2-value
-        chi2 = np.sum(self.weights*(self.y - f)**2/self.sy**2) + 
-        
-        return chi2
 
 
 
-# chi2 prop string med ddof 
-from scipy import stats
-def Chi2prop(Minuit_object, N_data):
-    '''Function for calculating the chi2 probability for a given Minuit object and number of data points.
-    
-       Input: Minuit object, number of data points
-       
-       returns: chi2 p-value , string(chi2 / dof = chi2_reduced)'''
 
-    chi2 = Minuit_object.fval
-    dof = N_data - Minuit_object.nfit
-    p_value = stats.chi2.sf(chi2, dof)
 
-    # string with chi2 / dof = chi2_reduced
-    chi2_string = f'{chi2:.2f} / {dof} = {chi2/dof:.2f}'
-
-    return p_value, chi2_string
 
 
 
@@ -524,4 +495,490 @@ def fisher_discriminant(sample1, sample2, w0=True):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ################################################################## ROC curve  ###############################################################
+
+
+
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.metrics import roc_curve, auc
+
+def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None):
+    """
+    Calculates the ROC curve and the AUC given two samples. 
+    Optionally condtions on either the FPR or TPR can be given to calculate the corresponding threshold.
+    
+    Parameters:
+        sample1 (numpy array): the first sample
+        sample2 (numpy array): the second sample
+    
+    Returns:
+        (array): the calculated FPR
+        (array): the calculated TPR
+        (float): the calculated AUC
+        (optional) (printed string): the calculated threshold for the given condition 
+    """
+
+
+    # Calculate the ROC curve
+    fpr, tpr, thresholds = roc_curve(np.concatenate((np.zeros(len(sample1)), np.ones(len(sample2)))), np.concatenate((x, y)))
+
+
+    # Plot the ROC curve
+    plt.plot(fpr, tpr)
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('ROC Curve')
+    plt.show()
+
+
+    # Calculate the Area Under the Curve (AUC)
+    Area = auc(fpr, tpr)   
+    print(f'The Area under the ROC curve is {Area:.3f}.') 
+
+
+    if fpr_cond != None:
+        condition_index = np.where(fpr < fpr_cond)[0][-1]
+        print(f'The threshold for a false positive rate of {fpr_cond} is {thresholds[condition_index]:.3f}')
+        
+    
+    if tpr_cond != None:
+        condition_index = np.where(tpr > tpr_cond)[0][0]
+        print(f'The threshold for a true positive rate of {tpr_cond} is {thresholds[condition_index]:.3f}')
+
+
+    return fpr, tpr, Area
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################################  Chi2  ###############################################################
+
+
+
+from iminuit.util import make_func_code
+from iminuit import describe #, Minuit
+
+def set_var_if_None(var, x):
+    if var is not None:
+        return np.array(var)
+    else: 
+        return np.ones_like(x)
+    
+def compute_f(f, x, *par):
+    try:
+        return f(x, *par)
+    except ValueError:
+        return np.array([f(xi, *par) for xi in x])
+
+
+#chi2 penelty function
+
+def Chi2penelty(parameter, know_parameter, sigma_parameter):
+    '''Function for calculating the penelty term for a given parameter, known parameter and sigma.
+    
+       Input: parameter, known parameter, sigma
+       
+       returns: penelty term'''
+
+    return (parameter - know_parameter)**2 / sigma_parameter**2
+
+
+
+class Chi2Regression:  # override the class with a better one
+
+    def __init__(self, f, x, y, sy=None, weights=None, bound=None, penelty=None):
+        
+        if bound is not None:
+            x = np.array(x)
+            y = np.array(y)
+            sy = np.array(sy)
+            mask = (x >= bound[0]) & (x <= bound[1])
+            x  = x[mask]
+            y  = y[mask]
+            sy = sy[mask]
+            
+        
+
+        self.f = f  # model predicts y for given x
+        self.x = np.array(x)
+        self.y = np.array(y)
+        
+        self.sy = set_var_if_None(sy, self.x)
+        self.weights = set_var_if_None(weights, self.x)
+        self.func_code = make_func_code(describe(self.f)[1:])
+
+        # if penelty is None:
+        #     self.penelty = 0
+        # else:
+        #     self.penelty = np.sum(Chi2penelty(*penelty))
+
+    def __call__(self, *par):  # par are a variable number of model parameters
+        
+        # compute the function value
+        f = compute_f(self.f, self.x, *par)
+        
+        # compute the chi2-value
+        chi2 = np.sum(self.weights*(self.y - f)**2/self.sy**2)      
+        
+        return chi2
+
+
+
+# chi2 prop string med ddof 
+from scipy import stats
+def Chi2prop(Minuit_object, N_data):
+    '''Function for calculating the chi2 probability for a given Minuit object and number of data points.
+    
+       Input: Minuit object, number of data points
+       
+       returns: chi2 p-value , string(chi2 / dof = chi2_reduced)'''
+
+    chi2 = Minuit_object.fval
+    dof = N_data - Minuit_object.nfit
+    p_value = stats.chi2.sf(chi2, dof)
+
+    # string with chi2 / dof = chi2_reduced
+    chi2_string = f'{chi2:.2f} / {dof} = {chi2/dof:.2f}'
+
+    return p_value, chi2_string
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################################  Likelihood fits  ###############################################################
+
+
+
+
+def simpson38(f, edges, bw, *arg):
+    
+    yedges = f(edges, *arg)
+    left38 = f((2.*edges[1:]+edges[:-1]) / 3., *arg)
+    right38 = f((edges[1:]+2.*edges[:-1]) / 3., *arg)
+    
+    return bw / 8.*( np.sum(yedges)*2.+np.sum(left38+right38)*3. - (yedges[0]+yedges[-1]) ) #simpson3/8
+
+
+def integrate1d(f, bound, nint, *arg):
+    """
+    compute 1d integral
+    """
+    edges = np.linspace(bound[0], bound[1], nint+1)
+    bw = edges[1] - edges[0]
+    
+    return simpson38(f, edges, bw, *arg)
+
+
+
+class UnbinnedLH:  # override the class with a better one
+    
+    def __init__(self, f, data, weights=None, bound=None, badvalue=-100000, extended=False, extended_bound=None, extended_nint=100):
+        
+        if bound is not None:
+            data = np.array(data)
+            mask = (data >= bound[0]) & (data <= bound[1])
+            data = data[mask]
+            if (weights is not None) :
+                weights = weights[mask]
+
+        self.f = f  # model predicts PDF for given x
+        self.data = np.array(data)
+        self.weights = set_var_if_None(weights, self.data)
+        self.bad_value = badvalue
+        
+        self.extended = extended
+        self.extended_bound = extended_bound
+        self.extended_nint = extended_nint
+        if extended and extended_bound is None:
+            self.extended_bound = (np.min(data), np.max(data))
+
+        
+        self.func_code = make_func_code(describe(self.f)[1:])
+
+    def __call__(self, *par):  # par are a variable number of model parameters
+        
+        logf = np.zeros_like(self.data)
+        
+        # compute the function value
+        f = compute_f(self.f, self.data, *par)
+    
+        # find where the PDF is 0 or negative (unphysical)        
+        mask_f_positive = (f>0)
+
+        # calculate the log of f everyhere where f is positive
+        logf[mask_f_positive] = np.log(f[mask_f_positive]) * self.weights[mask_f_positive] 
+        
+        # set everywhere else to badvalue
+        logf[~mask_f_positive] = self.bad_value
+        
+        # compute the sum of the log values: the LLH
+        llh = -np.sum(logf)
+        
+        if self.extended:
+            extended_term = integrate1d(self.f, self.extended_bound, self.extended_nint, *par)
+            llh += extended_term
+        
+        return llh
+    
+    def default_errordef(self):
+        return 0.5
+
+
+
+
+
+class BinnedLH:  # override the class with a better one
+    
+    def __init__(self, f, data, bins=40, weights=None, weighterrors=None, bound=None, badvalue=1000000, extended=False, use_w2=False, nint_subdiv=1):
+        
+        if bound is not None:
+            data = np.array(data)
+            mask = (data >= bound[0]) & (data <= bound[1])
+            data = data[mask]
+            if (weights is not None) :
+                weights = weights[mask]
+            if (weighterrors is not None) :
+                weighterrors = weighterrors[mask]
+
+        self.weights = set_var_if_None(weights, data)
+
+        self.f = f
+        self.use_w2 = use_w2
+        self.extended = extended
+
+        if bound is None: 
+            bound = (np.min(data), np.max(data))
+
+        self.mymin, self.mymax = bound
+
+        h, self.edges = np.histogram(data, bins, range=bound, weights=weights)
+        
+        self.bins = bins
+        self.h = h
+        self.N = np.sum(self.h)
+
+        if weights is not None:
+            if weighterrors is None:
+                self.w2, _ = np.histogram(data, bins, range=bound, weights=weights**2)
+            else:
+                self.w2, _ = np.histogram(data, bins, range=bound, weights=weighterrors**2)
+        else:
+            self.w2, _ = np.histogram(data, bins, range=bound, weights=None)
+
+
+        
+        self.badvalue = badvalue
+        self.nint_subdiv = nint_subdiv
+        
+        
+        self.func_code = make_func_code(describe(self.f)[1:])
+        self.ndof = np.sum(self.h > 0) - (self.func_code.co_argcount - 1)
+        
+
+    def __call__(self, *par):  # par are a variable number of model parameters
+
+        # ret = compute_bin_lh_f(self.f, self.edges, self.h, self.w2, self.extended, self.use_w2, self.badvalue, *par)
+        ret = compute_bin_lh_f2(self.f, self.edges, self.h, self.w2, self.extended, self.use_w2, self.nint_subdiv, *par)
+        
+        return ret
+
+
+    def default_errordef(self):
+        return 0.5
+
+
+
+
+import warnings
+
+
+def xlogyx(x, y):
+    
+    #compute x*log(y/x) to a good precision especially when y~x
+    
+    if x<1e-100:
+        warnings.warn('x is really small return 0')
+        return 0.
+    
+    if x<y:
+        return x*np.log1p( (y-x) / x )
+    else:
+        return -x*np.log1p( (x-y) / y )
+
+
+#compute w*log(y/x) where w < x and goes to zero faster than x
+def wlogyx(w, y, x):
+    if x<1e-100:
+        warnings.warn('x is really small return 0')
+        return 0.
+    if x<y:
+        return w*np.log1p( (y-x) / x )
+    else:
+        return -w*np.log1p( (x-y) / y )
+
+
+def compute_bin_lh_f2(f, edges, h, w2, extended, use_sumw2, nint_subdiv, *par):
+    
+    N = np.sum(h)
+    n = len(edges)
+
+    ret = 0.
+    
+    for i in range(n-1):
+        th = h[i]
+        tm = integrate1d(f, (edges[i], edges[i+1]), nint_subdiv, *par)
+        
+        if not extended:
+            if not use_sumw2:
+                ret -= xlogyx(th, tm*N) + (th-tm*N)
+
+            else:
+                if w2[i]<1e-200: 
+                    continue
+                tw = w2[i]
+                factor = th/tw
+                ret -= factor*(wlogyx(th,tm*N,th)+(th-tm*N))
+        else:
+            if not use_sumw2:
+                ret -= xlogyx(th,tm)+(th-tm)
+            else:
+                if w2[i]<1e-200: 
+                    continue
+                tw = w2[i]
+                factor = th/tw
+                ret -= factor*(wlogyx(th,tm,th)+(th-tm))
+
+    return ret
+
+
+
+
+
+def compute_bin_lh_f(f, edges, h, w2, extended, use_sumw2, badvalue, *par):
+    
+    mask_positive = (h>0)
+    
+    N = np.sum(h)
+    midpoints = (edges[:-1] + edges[1:]) / 2
+    b = np.diff(edges)
+    
+    midpoints_pos = midpoints[mask_positive]
+    b_pos = b[mask_positive]
+    h_pos = h[mask_positive]
+    
+    if use_sumw2:
+        warnings.warn('use_sumw2 = True: is not yet implemented, assume False ')
+        s = np.ones_like(midpoints_pos)
+        pass
+    else: 
+        s = np.ones_like(midpoints_pos)
+
+    
+    E_pos = f(midpoints_pos, *par) * b_pos
+    if not extended:
+        E_pos = E_pos * N
+        
+    E_pos[E_pos<0] = badvalue
+    
+    ans = -np.sum( s*( h_pos*np.log( E_pos/h_pos ) + (h_pos-E_pos) ) )
+
+    return ans
+
+
+
+
+
+
+
