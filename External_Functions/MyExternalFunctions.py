@@ -43,7 +43,7 @@ def Matplotlib_settings():
     plt.rcParams['grid.alpha'] = 0.5
     plt.rcParams['grid.color'] = "#cccccc"
     plt.rcParams['lines.color'] = "k"
-    plt.rcParams['lines.linewidth'] = 1
+    plt.rcParams['lines.linewidth'] = 2
     plt.rcParams['lines.markersize'] = 6
     plt.rcParams['legend.fontsize'] = 12
     plt.rcParams['figure.titlesize'] = 14
@@ -55,7 +55,7 @@ def Matplotlib_settings():
     plt.rcParams['ytick.minor.visible'] = True
     plt.rcParams['xtick.minor.size'] = 2
     plt.rcParams['ytick.minor.size'] = 2
-    plt.rcParams['errorbar.capsize'] = 2
+    plt.rcParams['errorbar.capsize'] = 4
 
 
 
