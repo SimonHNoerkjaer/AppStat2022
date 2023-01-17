@@ -553,8 +553,9 @@ def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None):
 
 
     # Plot the ROC curve
-    fig, ax = plt.subplots(figsize=(8,8))
+    fig, ax = plt.subplots(figsize=(8,7))
     ax.plot(fpr, tpr)
+    ax.plot([0,1], [0,1], linestyle='--', color='black')
     ax.set(xlabel='False Positive Rate', ylabel='True Positive Rate', title='ROC curve')
 
 
