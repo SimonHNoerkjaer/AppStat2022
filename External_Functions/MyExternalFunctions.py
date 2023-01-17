@@ -563,7 +563,6 @@ def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None, plot=True):
 
     # Calculate the Area Under the Curve (AUC)
     Area = auc(fpr, tpr)   
-    print(f'The Area under the ROC curve is {Area:.3f}.') 
 
 
     if fpr_cond != None:
