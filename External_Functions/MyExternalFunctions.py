@@ -530,7 +530,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.metrics import roc_curve, auc
 
-def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None):
+def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None, plot=True):
     """
     Calculates the ROC curve and the AUC given two samples. 
     Optionally condtions on either the FPR or TPR can be given to calculate the corresponding threshold.
@@ -553,10 +553,11 @@ def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None):
 
 
     # Plot the ROC curve
-    fig, ax = plt.subplots(figsize=(8,7))
-    ax.plot(fpr, tpr)
-    ax.plot([0,1], [0,1], linestyle='--', color='black')
-    ax.set(xlabel='False Positive Rate', ylabel='True Positive Rate', title='ROC curve')
+    if plot==True:
+        fig, ax = plt.subplots(figsize=(8,7))
+        ax.plot(fpr, tpr)
+        ax.plot([0,1], [0,1], linestyle='--', color='black')
+        ax.set(xlabel='False Positive Rate', ylabel='True Positive Rate', title='ROC curve')
 
 
 
@@ -575,7 +576,7 @@ def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None):
         print(f'The threshold for a true positive rate of {tpr_cond} is {thresholds[condition_index]:.3f}')
 
 
-    return fig, ax, fpr, tpr, Area
+    return fpr, tpr, Area
 
 
 
