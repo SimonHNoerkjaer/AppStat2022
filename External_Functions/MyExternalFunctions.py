@@ -451,9 +451,9 @@ def Accept_reject(f, xrange, yrange, N_accepted):
 
 import numpy as np
 
-def fisher_discriminant(sample1, sample2, w0=True):
+def fisher_2var(sample1, sample2, w0=True):
     """
-    Calculates Fisher discriminants given two samples with the w0 correction term as default.
+    Calculates Fisher discriminants given two samples with two variables with the w0 correction term as default.
     
     Parameters:
         sample1 (numpy array): the first sample
@@ -489,6 +489,46 @@ def fisher_discriminant(sample1, sample2, w0=True):
 
 
 
+
+def fisher_3var(A1, B1, C1, A2, B2, C2):
+    """
+     Calculates Fisher discriminants given two samples with three variables.
+    
+     Parameters:
+        sample1 (numpy array): the first sample
+        sample2 (numpy array): the second sample
+        w0 (bool): if True, the w0 correction term is calculated
+    
+     Returns:
+        (float): the calculated Fisher discriminant
+    """
+
+    import numpy as np
+    # Mean vectors
+    mean1 = np.array([np.mean(A1), np.mean(B1), np.mean(C1)])
+    mean2 = np.array([np.mean(A2), np.mean(B2), np.mean(C2)])
+
+    # Within-class scatter matrix
+    S1 = np.zeros((3,3))
+    S2 = np.zeros((3,3))
+    for i in range(len(A1)):
+        xi = np.array([A1[i], B1[i], C1[i]])
+        S1 += (xi - mean1).dot((xi - mean1).T)
+
+    for i in range(len(A2)):
+        xi = np.array([A2[i], B2[i], C2[i]])
+        S2 += (xi - mean2).dot((xi - mean2).T)
+
+    S_w = S1 + S2
+
+    # Between-class scatter matrix
+    S_b = (mean1 - mean2).dot((mean1 - mean2).T)
+
+    # Eigenvectors of the scatter matrices
+    eigen_values, eigen_vectors = np.linalg.eig(np.linalg.inv(S_w).dot(S_b))
+    # Fisher discriminant function
+    w = eigen_vectors[np.argmax(eigen_values)]
+    return w
 
 
 
