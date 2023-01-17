@@ -642,7 +642,7 @@ def Chi2penelty(parameter, know_parameter, sigma_parameter):
     
        Input: parameter, known parameter, sigma
        
-       returns: penelty term'''
+       returns: penelty term (parameter index, value, sigma)'''
 
     return (parameter - know_parameter)**2 / sigma_parameter**2
 
@@ -671,10 +671,11 @@ class Chi2Regression:  # override the class with a better one
         self.weights = set_var_if_None(weights, self.x)
         self.func_code = make_func_code(describe(self.f)[1:])
 
-        # if penelty is None:
-        #     self.penelty = 0
-        # else:
-        #     self.penelty = np.sum(Chi2penelty(*penelty))
+        if penelty is not None:
+            self.penelty = penelty[1:]
+            self.peneltypar = penelty[0]
+        else:
+            self.penelty = None
 
     def __call__(self, *par):  # par are a variable number of model parameters
         
@@ -682,7 +683,10 @@ class Chi2Regression:  # override the class with a better one
         f = compute_f(self.f, self.x, *par)
         
         # compute the chi2-value
-        chi2 = np.sum(self.weights*(self.y - f)**2/self.sy**2)      
+        if self.penelty is not None:
+            chi2 = np.sum(self.weights*(self.y - f)**2/self.sy**2) +  Chi2penelty(self.peneltypar, self.penelty[0], self.penelty[1])
+        else:
+            chi2 = np.sum(self.weights*(self.y - f)**2/self.sy**2) 
         
         return chi2
 
