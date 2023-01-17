@@ -548,7 +548,7 @@ def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None):
 
 
     # Calculate the ROC curve
-    fpr, tpr, thresholds = roc_curve(np.concatenate((np.zeros(len(sample1)), np.ones(len(sample2)))), np.concatenate((x, y)))
+    fpr, tpr, thresholds = roc_curve(np.concatenate((np.zeros(len(sample1)), np.ones(len(sample2)))), np.concatenate((sample1, sample2)))
 
 
     # Plot the ROC curve
