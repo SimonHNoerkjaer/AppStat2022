@@ -540,6 +540,7 @@ def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None):
         sample2 (numpy array): the second sample
     
     Returns:
+        fig, ax (matplotlib figure): the ROC curve
         (array): the calculated FPR
         (array): the calculated TPR
         (float): the calculated AUC
@@ -552,11 +553,10 @@ def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None):
 
 
     # Plot the ROC curve
-    plt.plot(fpr, tpr)
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('ROC Curve')
-    plt.show()
+    fig, ax = plt.subplots(figsize=(8,8))
+    ax.plot(fpr, tpr)
+    ax.set(xlabel='False Positive Rate', ylabel='True Positive Rate', title='ROC curve')
+
 
 
     # Calculate the Area Under the Curve (AUC)
@@ -574,7 +574,7 @@ def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None):
         print(f'The threshold for a true positive rate of {tpr_cond} is {thresholds[condition_index]:.3f}')
 
 
-    return fpr, tpr, Area
+    return fig, ax, fpr, tpr, Area
 
 
 
