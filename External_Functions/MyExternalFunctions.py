@@ -267,7 +267,7 @@ def Errorpropagation(f, par, con = None, rho = None, cov = None):
 ############################################################### Histogram  ###############################################################
 
 import numpy as np
-def binning(x, xrange, Nbins, remove_empty=True):
+def binning(x, Nbins,xrange=None, remove_empty=True):
     '''Function for binning data and removing empty bins
     
        x: data to be binned
@@ -276,6 +276,10 @@ def binning(x, xrange, Nbins, remove_empty=True):
        remove_empty_bins: if True, empty bins are removed from
        
        returns: counts, bin_centers, binwidth'''
+    
+    if xrange is None:
+        xrange = (np.min(x), np.max(x))
+
     binwidth = (xrange[1]-xrange[0])/Nbins
     counts , bin_edges = np.histogram(x, range=xrange, bins=Nbins)
     bin_centers = (bin_edges[:-1] + bin_edges[1:])/2
