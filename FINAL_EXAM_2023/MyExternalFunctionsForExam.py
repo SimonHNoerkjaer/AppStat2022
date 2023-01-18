@@ -323,6 +323,42 @@ def easy_hist(x, Nbins, Figsize=(10, 7), xrange=None, title= None, x_label= 'x')
 
 
 
+#Collapsing 2d histogram into 1d:
+def profile_x(x, y, xyrange=None, bins=(50, 50), ):
+    '''Function for collapsing 2d histogram into 1d profile
+
+        x: x data
+        y: y data
+        xyrange: range of data in tuble. Default: (min(x), max(x))
+        bins: number of bins in x and y direction
+
+        returns: x_center, mean, std
+        '''
+    
+    if xyrange is None:
+        xyrange = [(np.min(x), np.max(x)), (np.min(y), np.max(y))]
+
+    H, xedges, yedges = np.histogram2d(x, y, bins=bins, range=xyrange)
+    x_center = 0.5*(xedges[1:] + xedges[:-1])
+    y_center = 0.5*(yedges[1:] + yedges[:-1])
+    
+    wsums = H.sum(1)
+    
+    mask = wsums > 0
+    
+    mean = (H*y_center).sum(1)[mask] / wsums[mask]
+    mean_squared = (H*y_center**2).sum(1)[mask] / wsums[mask]
+    std = np.sqrt( mean_squared - mean**2 ) / np.sqrt(wsums[mask]) 
+    std_mask  = std > 0
+
+    return x_center[mask][std_mask], mean[std_mask], std[std_mask]
+
+
+
+
+
+
+
 
 
 
