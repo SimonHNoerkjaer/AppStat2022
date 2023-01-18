@@ -290,13 +290,18 @@ def binning(x, xrange, Nbins, remove_empty=True):
 
 
 #Plotting histogram:
-def easy_hist(x, xrange, Nbins, Figsize=(10, 7), title= None, x_label= 'x'):
+def easy_hist(x, Nbins, Figsize=(10, 7), xrange=None, title= None, x_label= 'x'):
     '''Function for plotting a histogram
     
        x: data to be binned
-       xrange: range of data in tuble (min, max)
+       xrange: range of data in tuble. Default: (min(x), max(x))
        Nbins: number of bins
        '''
+    
+    
+    if xrange is None:
+        xrange = (np.min(x), np.max(x))
+
     counts, bin_centers, binwidth = binning(x, xrange, Nbins)
     fig, ax = plt.subplots(figsize=Figsize)
     ax.hist(x, bins=Nbins ,range=xrange, histtype='stepfilled', color='lightgreen',edgecolor='grey', linewidth=1.2)
