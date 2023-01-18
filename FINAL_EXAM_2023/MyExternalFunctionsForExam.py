@@ -704,7 +704,7 @@ class Chi2Regression:  # override the class with a better one
 
 # chi2 prop string med ddof 
 from scipy import stats
-def Chi2prop(Minuit_object, N_data):
+def Chi2prob(Minuit_object, N_data):
     '''Function for calculating the chi2 probability for a given Minuit object and number of data points.
     
        Input: Minuit object, number of data points
