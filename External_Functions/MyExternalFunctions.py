@@ -306,7 +306,7 @@ def easy_hist(x, Nbins, Figsize=(10, 7), xrange=None, title= None, x_label= 'x')
     if xrange is None:
         xrange = (np.min(x), np.max(x))
 
-    counts, bin_centers, binwidth = binning(x, xrange, Nbins)
+    counts, bin_centers, binwidth = binning(x, Nbins, xrange=xrange)
     fig, ax = plt.subplots(figsize=Figsize)
     ax.hist(x, bins=Nbins ,range=xrange, histtype='stepfilled', color='lightgreen',edgecolor='grey', linewidth=1.2)
     ax.errorbar(bin_centers, counts, yerr=np.sqrt(counts), fmt='o',mec='k',mfc='g', capsize=2, ecolor='g')
