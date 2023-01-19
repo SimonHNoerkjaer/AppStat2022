@@ -324,7 +324,7 @@ def easy_hist(x, Nbins, Figsize=(10, 7), xrange=None, title= None, x_label= 'x')
 
 
 #Collapsing 2d histogram into 1d:
-def profile_x(x, y, xyrange=None, bins=(50, 50), ):
+def profile_x(x, y, xyrange=None, bins=(50, 50)):
     '''Function for collapsing 2d histogram into 1d profile
 
         x: x data
@@ -631,6 +631,60 @@ def ROC_curve(sample1, sample2, fpr_cond=None, tpr_cond=None, plot=True):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###################################################### Runs Test ###############################################################
+
+
+import numpy as np
+from scipy import stats
+def runs_test(res):
+    """
+    Calculates the runs test for a given array of residuals.
+
+    Parameters:
+        res (numpy array): the array of residuals
+
+    Returns:
+        (int): the number of runs
+        (float): the expected number of runs
+        (float): the standard deviation
+        (float): the z-score
+        (float): the p-value
+    """
+
+
+    n = len(res)
+    runs, pos, neg = 0 ,0 ,0
+    
+    for i in range(n):
+        if res[i] > 0:
+            pos += 1
+        else:
+            neg += 1
+        if i == 0:
+            continue
+        if res[i]*res[i-1] < 0:                 # if the signs are different add run
+            runs += 1
+
+    runs_exp = (2*pos*neg)/(pos+neg) + 1
+    std = np.sqrt(2*pos*neg*(2*pos*neg-pos-neg)/((pos+neg)**2*(pos+neg-1)))
+    z = (runs - runs_exp)/std
+    p = stats.norm.sf(abs(z))*2
+
+    return runs, runs_exp, std, z, p
 
 
 
