@@ -408,7 +408,7 @@ def inverse_transform(f,N, xmin, xmax=None):
     F_inv = sp.solve(F-y, x)[0]
     F_inv = sp.lambdify(y, F_inv, 'numpy')
     r = np.random
-    r.seed(42)
+    r.seed(12345)
     y = r.uniform(0,1,N)
     x_values = F_inv(y)
 
@@ -432,7 +432,7 @@ def Accept_reject(f, xrange, yrange, N_accepted):
        [normalization, normalization error]'''
        
     r = np.random
-    r.seed(42)
+    r.seed(12345)
     
     N_try = 0
     x_accepted = []
