@@ -311,7 +311,7 @@ def easy_hist(x, Nbins, Figsize=(10, 7), xrange=None, title= None, x_label= 'x')
     fig, ax = plt.subplots(figsize=Figsize)
     ax.hist(x, bins=Nbins ,range=xrange, histtype='stepfilled', color='lightgreen',edgecolor='grey', linewidth=1.2)
     ax.errorbar(bin_centers, counts, yerr=np.sqrt(counts), fmt='o',mec='k',mfc='g', capsize=2, ecolor='g')
-    ax.set(xlabel=x_label, ylabel=f'Counts / {binwidth:.2f}', title=title)
+    ax.set(xlabel=x_label, ylabel=f'Counts / {binwidth:.2}', title=title)
     # plt.show()
     return fig, ax , counts , bin_centers, binwidth
     
